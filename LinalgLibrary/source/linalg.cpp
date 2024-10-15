@@ -52,7 +52,7 @@ linalg::Matrix::Matrix(const Matrix& m) {
 	}
 }
 
-linalg::Matrix::Matrix(Matrix&& m) {
+linalg::Matrix::Matrix(Matrix&& m) noexcept{
 	m_rows = m.m_rows;
 	m_columns = m.m_columns;
 	m_ptr = m.m_ptr;
@@ -99,4 +99,36 @@ linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a) {
 		p += m_columns;
 	}
 
-};
+}
+
+linalg::Matrix& linalg::Matrix::operator=(const linalg::Matrix& obj) {
+	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
+		delete[] m_ptr;
+		m_rows = obj.m_rows;
+		m_columns = obj.m_columns;
+		m_ptr = new double[m_rows * m_columns];
+	}
+	for (int i = 0; i < m_rows * m_columns; i++) {
+		m_ptr[i] = obj.m_ptr[i];
+	}
+	return *this;
+}
+
+linalg::Matrix& linalg::Matrix::operator=(linalg::Matrix&& obj) {
+	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
+		delete[] m_ptr;
+		m_rows = obj.m_rows;
+		m_columns = obj.m_columns;
+		m_ptr = new double[m_rows * m_columns];
+	}
+	for (int i = 0; i < m_rows * m_columns; i++) {
+		m_ptr[i] = obj.m_ptr[i];
+	}
+
+	obj.m_ptr = nullptr;
+	obj.m_rows = 0;
+	obj.m_columns = 0;
+
+	return *this;
+}
+
