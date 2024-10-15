@@ -2,38 +2,101 @@
 #include <stdexcept>
 #include <iostream>
 
-namespace linalg {
+size_t linalg::Matrix::rows() const {
+	return m_rows;
+}
 
-	size_t Matrix::rows() const {
-		return m_rows;
-	}
+size_t linalg::Matrix::columns() const{
+	return m_columns;
+}
 
-	size_t Matrix::columns() const{
-		return m_columns;
-	}
+bool linalg::Matrix::empty() const {
+	return (m_rows == 0 || m_columns == 0);
+}
 
-	bool Matrix::empty() const {
-		return (m_rows == 0 || m_columns == 0);
-	}
-
-	void Matrix::reshape(size_t rows, size_t columns) {
-		if (rows * columns == m_rows * m_columns) {
-			m_rows = rows;
-			m_columns = columns;
-		}
-		else {
-			throw std::runtime_error("The number of elements shouldn't be changed");
-		}
-
-	}
-
-	Matrix::Matrix(size_t rows, size_t columns) {
+void linalg::Matrix::reshape(size_t rows, size_t columns) {
+	if (rows * columns == m_rows * m_columns) {
 		m_rows = rows;
 		m_columns = columns;
-		m_ptr = new double[m_rows * m_columns]();
+	}
+	else {
+		throw std::runtime_error("The number of elements shouldn't be changed");
 	}
 
-	Matrix::~Matrix(){
-		delete[] m_ptr;
+}
+
+linalg::Matrix::Matrix(size_t rows, size_t columns) {
+	m_rows = rows;
+	m_columns = columns;
+	m_ptr = new double[m_rows * m_columns]();
+}
+
+linalg::Matrix::Matrix(size_t rows) {
+	m_rows = rows;
+	m_columns = 1;
+}
+
+linalg::Matrix::~Matrix(){
+	delete[] m_ptr;
+}
+
+linalg::Matrix::Matrix(const Matrix& m) {
+	m_rows = m.m_rows;
+	m_columns = m.m_columns;
+
+	m_ptr = new double[m_rows * m_columns];
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			m_ptr[i * m_columns + j] = m.m_ptr[i * m_columns + j];
+		}
 	}
 }
+
+linalg::Matrix::Matrix(Matrix&& m) {
+	m_rows = m.m_rows;
+	m_columns = m.m_columns;
+	m_ptr = m.m_ptr;
+
+	m_rows = 0;
+	m_columns = 0;
+	m_ptr = nullptr;
+}
+
+
+linalg::Matrix::Matrix(std::initializer_list<double> a) {
+	if (a.size() == 0) {
+		std::cout << "The matrix can't be empty";
+		exit(1);
+	}
+
+	m_columns = 1;
+	m_rows = a.size();
+	m_ptr = new double[m_rows * m_columns];
+	std::copy(a.begin(), a.end(), m_ptr);
+}
+
+linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a) {
+	if (a.size() == 0) {
+		m_rows = 0;
+		m_columns = 0;
+		return;
+	}
+	
+	m_rows = a.size();
+	m_columns = a.begin()->size();
+	
+	for (const auto& el : a) {
+		if (el.size() != m_columns) {
+			std::cout << "The rows of matrix must have the equal size";
+			exit(1);
+		}
+	}
+
+	m_ptr = new double[m_rows * m_columns];
+	double* p = m_ptr;
+	for (const auto& el : a) {
+		std::copy(el.begin(), el.end(), p);
+		p += m_columns;
+	}
+
+};
