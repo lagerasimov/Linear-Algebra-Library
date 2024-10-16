@@ -25,6 +25,10 @@ void linalg::Matrix::reshape(size_t rows, size_t columns) {
 
 }
 
+linalg::Matrix::Matrix() {
+
+}
+
 linalg::Matrix::Matrix(size_t rows, size_t columns) {
 	m_rows = rows;
 	m_columns = columns;
@@ -43,23 +47,18 @@ linalg::Matrix::~Matrix(){
 linalg::Matrix::Matrix(const Matrix& m) {
 	m_rows = m.m_rows;
 	m_columns = m.m_columns;
-
 	m_ptr = new double[m_rows * m_columns];
-	for (int i = 0; i < m_rows; i++) {
-		for (int j = 0; j < m_columns; j++) {
-			m_ptr[i * m_columns + j] = m.m_ptr[i * m_columns + j];
-		}
-	}
+	std::copy(m.m_ptr, m.m_ptr + m_rows * m_columns, m_ptr);
 }
 
-linalg::Matrix::Matrix(Matrix&& m) noexcept{
+linalg::Matrix::Matrix(Matrix&& m) {
 	m_rows = m.m_rows;
 	m_columns = m.m_columns;
 	m_ptr = m.m_ptr;
 
-	m_rows = 0;
-	m_columns = 0;
-	m_ptr = nullptr;
+	m.m_rows = 0;
+	m.m_columns = 0;
+	m.m_ptr = nullptr;
 }
 
 
@@ -75,7 +74,7 @@ linalg::Matrix::Matrix(std::initializer_list<double> a) {
 	std::copy(a.begin(), a.end(), m_ptr);
 }
 
-linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a) {
+linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a){
 	if (a.size() == 0) {
 		m_rows = 0;
 		m_columns = 0;
@@ -114,7 +113,7 @@ linalg::Matrix& linalg::Matrix::operator=(const linalg::Matrix& obj) {
 	return *this;
 }
 
-linalg::Matrix& linalg::Matrix::operator=(linalg::Matrix&& obj) {
+linalg::Matrix& linalg::Matrix::operator=(linalg::Matrix&& obj){
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
 		delete[] m_ptr;
 		m_rows = obj.m_rows;
@@ -131,4 +130,21 @@ linalg::Matrix& linalg::Matrix::operator=(linalg::Matrix&& obj) {
 
 	return *this;
 }
+
+double& linalg::Matrix::operator() (size_t row, size_t column) {
+	if (row >= m_rows || column >= m_columns) {
+		std::cout << "The indexes can't go beyond the size of the matrix";
+		exit(1);
+	}
+	return m_ptr[row * m_columns + column];
+}
+
+const double& linalg::Matrix::operator() (size_t row, size_t column) const {
+	if (row >= m_rows || column >= m_columns) {
+		std::cout << "The indexes can't go beyond the size of the matrix";
+		exit(1);
+	}
+	return m_ptr[row * m_columns + column];
+}
+
 
