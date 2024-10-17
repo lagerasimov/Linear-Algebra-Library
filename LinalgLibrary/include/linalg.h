@@ -12,7 +12,7 @@ namespace linalg {
 		Matrix(size_t rows);
 
 		Matrix(const Matrix& m);  //конструктор копирования lvalue-объекта		
-		Matrix(Matrix&& m); //конструктор копирования rvalue-объекта
+		Matrix(Matrix&& m) noexcept; //конструктор копирования rvalue-объекта
 
 		//конструкторы с унифицированной инициализацией
 		Matrix(std::initializer_list<double> a); 
@@ -22,7 +22,7 @@ namespace linalg {
 
 		//операторы
 		Matrix& operator=(const Matrix& obj); 
-		Matrix& operator=(Matrix&& obj);
+		Matrix& operator=(Matrix&& obj) noexcept;
 		double& operator() (size_t row, size_t column);
 		const double& operator() (size_t row, size_t column) const;
 			 
@@ -37,3 +37,4 @@ namespace linalg {
 		size_t m_rows = 0, m_columns = 0;
 	};
 }
+std::ostream& operator<<(std::ostream& potok, const linalg::Matrix& m);

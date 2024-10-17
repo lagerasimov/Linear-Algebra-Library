@@ -1,6 +1,9 @@
 #include <linalg.h>
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
+//#include <string>
+#include <iomanip> //для std::setw
 
 size_t linalg::Matrix::rows() const {
 	return m_rows;
@@ -51,7 +54,7 @@ linalg::Matrix::Matrix(const Matrix& m) {
 	std::copy(m.m_ptr, m.m_ptr + m_rows * m_columns, m_ptr);
 }
 
-linalg::Matrix::Matrix(Matrix&& m) {
+linalg::Matrix::Matrix(Matrix&& m) noexcept{
 	m_rows = m.m_rows;
 	m_columns = m.m_columns;
 	m_ptr = m.m_ptr;
@@ -74,7 +77,7 @@ linalg::Matrix::Matrix(std::initializer_list<double> a) {
 	std::copy(a.begin(), a.end(), m_ptr);
 }
 
-linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a){
+linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a) {
 	if (a.size() == 0) {
 		m_rows = 0;
 		m_columns = 0;
@@ -113,7 +116,7 @@ linalg::Matrix& linalg::Matrix::operator=(const linalg::Matrix& obj) {
 	return *this;
 }
 
-linalg::Matrix& linalg::Matrix::operator=(linalg::Matrix&& obj){
+linalg::Matrix& linalg::Matrix::operator=(linalg::Matrix&& obj) noexcept{
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
 		delete[] m_ptr;
 		m_rows = obj.m_rows;
@@ -147,4 +150,46 @@ const double& linalg::Matrix::operator() (size_t row, size_t column) const {
 	return m_ptr[row * m_columns + column];
 }
 
+int element_length(double a) {
+	std::ostringstream out;
+	out << a;
+	std::string s = out.str();
+	return s.length();
+}
+
+int* widths(const linalg::Matrix& m) {
+	int* widths = new int[m.columns()]();
+	for (int j = 0; j < m.columns(); j++) { //пробегаемся по столбцам матрицы
+		for (int i = 0; i < m.rows(); i++) {
+			if (element_length(m(i, j)) > widths[j]){
+				widths[j] = element_length(m(i, j));
+			}
+		}
+	}
+	return widths;
+}
+
+std::ostream& operator<<(std::ostream& potok, const linalg::Matrix& m) {
+	int* sizes = widths(m);
+	if (m.rows() == 0 || m.columns() == 0) {
+		potok << "The matrix is empty";
+		return potok;
+	}
+	for (int i = 0; i < m.rows(); ++i) {
+		potok << '|';
+		for (int j = 0; j < m.columns(); ++j) {
+			if (j == 0) {
+				potok << std::setw(sizes[j]) << m(i, j);
+			}
+			else {
+				potok << std::setw(sizes[j] + 1) << m(i, j);
+			}
+		}
+		potok << "|\n";
+	}
+
+	delete[] sizes;
+
+	return potok;
+}
 
