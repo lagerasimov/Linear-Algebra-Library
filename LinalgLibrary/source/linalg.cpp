@@ -104,6 +104,9 @@ linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a) {
 }
 
 linalg::Matrix& linalg::Matrix::operator=(const Matrix& obj) {
+	if (this == &obj) {
+		return *this;
+	}
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
 		delete[] m_ptr;
 		m_rows = obj.m_rows;
@@ -117,6 +120,9 @@ linalg::Matrix& linalg::Matrix::operator=(const Matrix& obj) {
 }
 
 linalg::Matrix& linalg::Matrix::operator=(Matrix&& obj) noexcept{
+	if (this == &obj) {
+		return *this;
+	}
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
 		delete[] m_ptr;
 		m_rows = obj.m_rows;
@@ -150,40 +156,35 @@ const double& linalg::Matrix::operator() (size_t row, size_t column) const {
 	return m_ptr[row * m_columns + column];
 }
 
-int element_length(double a) {
+size_t element_length(double a) {
 	std::ostringstream out;
 	out << a;
 	std::string s = out.str();
-	return s.length();
+	out.str("");
+	return s.size();
 }
 
-int* widths(const linalg::Matrix& m) {
-	int* widths = new int[m.columns()]();
+size_t* widths(const linalg::Matrix& m) {
+	size_t* widths = new size_t[m.columns()]();
 	for (int j = 0; j < m.columns(); j++) { //пробегаемся по столбцам матрицы
 		for (int i = 0; i < m.rows(); i++) {
-			if (element_length(m(i, j)) > widths[j]){
-				widths[j] = element_length(m(i, j));
-			}
+			widths[j] = std::max(element_length(m(i, j)), widths[j]);
 		}
 	}
 	return widths;
 }
 
-std::ostream& operator<<(std::ostream& potok, const linalg::Matrix& m) {
-	int* sizes = widths(m);
+std::ostream& linalg::operator<<(std::ostream& potok, const linalg::Matrix& m) {
+	size_t* sizes = widths(m);
 	if (m.rows() == 0 || m.columns() == 0) {
-		potok << "The matrix is empty";
+		potok << "|empty|";
 		return potok;
 	}
 	for (int i = 0; i < m.rows(); ++i) {
 		potok << '|';
-		for (int j = 0; j < m.columns(); ++j) {
-			if (j == 0) {
-				potok << std::setw(sizes[j]) << m(i, j);
-			}
-			else {
-				potok << std::setw(sizes[j] + 1) << m(i, j);
-			}
+		potok << std::setw(sizes[0]) << m(i, 0);
+		for (int j = 1; j < m.columns(); ++j) {
+			potok << std::setw(sizes[j] + 1) << m(i, j);
 		}
 		potok << "|\n";
 	}
@@ -221,6 +222,114 @@ linalg::Matrix& linalg::Matrix::operator+=(const Matrix& obj) {
 	}
 	return *this;
 }
+
+linalg::Matrix linalg::Matrix::operator-(const Matrix& obj) const {
+	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
+		std::cout << "The sizes of the matrices don't match";
+		exit(1);
+	}
+
+	Matrix new_matrix(m_rows, m_columns);
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			new_matrix(i, j) = (*this)(i, j) - obj(i, j);
+		}
+	}
+
+	return new_matrix;
+
+};
+
+linalg::Matrix& linalg::Matrix::operator-=(const Matrix& obj) {
+	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
+		std::cout << "The sizes of the matrices don't match";
+		exit(1);
+	}
+
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			(*this)(i, j) -= obj(i, j);
+		}
+	}
+	return *this;
+}
+
+linalg::Matrix linalg::Matrix::operator*(const Matrix& obj) const {
+	if (m_columns != obj.m_rows) {
+		std::cout << "The number of columns of the first matrix must match the number of rows of the second matrix";
+		exit(1);
+	}
+
+	linalg::Matrix new_matrix(m_rows, obj.m_columns);
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < obj.m_columns; j++) {
+			new_matrix(i, j) = 0.0;
+			for (int p = 0; p < m_columns; p++) {
+				new_matrix(i, j) += (*this)(i, p) * obj(p, j);
+			}
+		}
+	}
+	return new_matrix;
+}
+
+linalg::Matrix linalg::Matrix::operator*(double ch) const {
+	linalg::Matrix new_matrix(m_rows, m_columns);
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			new_matrix(i, j) = (*this)(i, j) * ch;
+		}
+	}
+	return new_matrix;
+}
+
+linalg::Matrix linalg::operator*(double ch, const Matrix& obj) {
+	linalg::Matrix new_matrix(obj.rows(), obj.columns());
+	for (int i = 0; i < obj.rows(); i++) {
+		for (int j = 0; j < obj.columns(); j++) {
+			new_matrix(i, j) = obj(i, j) * ch;
+		}
+	}
+	return new_matrix;
+};
+
+linalg::Matrix& linalg::Matrix::operator*=(double ch){
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			(*this)(i, j) = (*this)(i, j) * ch;
+		}
+	}
+	return *this;
+}
+
+linalg::Matrix& linalg::Matrix::operator*=(const Matrix& obj) {
+	if (m_columns != obj.m_rows) {
+		std::cout << "The number of columns of the first matrix must match the number of rows of the second matrix";
+		exit(1);
+	}
+
+	Matrix new_matrix = (*this) * obj;
+	*this = std::move(new_matrix);
+	return *this;
+}
+
+bool linalg::Matrix::operator==(const Matrix& obj) const {
+	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
+		return false;
+	}
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			if ((*this)(i, j) != obj(i, j)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+bool linalg::Matrix::operator!=(const Matrix& obj) const {
+	return !(*this == obj);
+}
+
 
 
 

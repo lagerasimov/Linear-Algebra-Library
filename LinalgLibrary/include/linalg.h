@@ -47,5 +47,6 @@ namespace linalg {
 		double* m_ptr = nullptr;
 		size_t m_rows = 0, m_columns = 0;
 	};
+	std::ostream& operator<<(std::ostream& potok, const Matrix& m);
+	Matrix operator*(double ch, const Matrix& obj);
 }
-std::ostream& operator<<(std::ostream& potok, const linalg::Matrix& m);
