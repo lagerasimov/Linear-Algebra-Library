@@ -25,6 +25,17 @@ namespace linalg {
 		Matrix& operator=(Matrix&& obj) noexcept;
 		double& operator() (size_t row, size_t column);
 		const double& operator() (size_t row, size_t column) const;
+
+		Matrix operator+(const Matrix& obj) const;
+		Matrix& operator+=(const Matrix& obj);
+		Matrix operator-(const Matrix& obj) const;
+		Matrix& operator-=(const Matrix& obj);
+		Matrix operator*(const Matrix& obj) const;
+		Matrix operator*(double ch) const;
+		Matrix& operator*=(const Matrix& obj);
+		Matrix& operator*=(double ch);
+		bool operator==(const Matrix& obj) const;
+		bool operator!=(const Matrix& obj) const;
 			 
 		
 		size_t rows() const;

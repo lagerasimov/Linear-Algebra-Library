@@ -103,7 +103,7 @@ linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a) {
 
 }
 
-linalg::Matrix& linalg::Matrix::operator=(const linalg::Matrix& obj) {
+linalg::Matrix& linalg::Matrix::operator=(const Matrix& obj) {
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
 		delete[] m_ptr;
 		m_rows = obj.m_rows;
@@ -116,7 +116,7 @@ linalg::Matrix& linalg::Matrix::operator=(const linalg::Matrix& obj) {
 	return *this;
 }
 
-linalg::Matrix& linalg::Matrix::operator=(linalg::Matrix&& obj) noexcept{
+linalg::Matrix& linalg::Matrix::operator=(Matrix&& obj) noexcept{
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
 		delete[] m_ptr;
 		m_rows = obj.m_rows;
@@ -192,4 +192,35 @@ std::ostream& operator<<(std::ostream& potok, const linalg::Matrix& m) {
 
 	return potok;
 }
+
+linalg::Matrix linalg::Matrix::operator+(const Matrix& obj) const {
+	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
+		std::cout << "The sizes of the matrices don't match";
+		exit(1);
+	}
+
+	Matrix new_matrix(m_rows, m_columns);
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			new_matrix(i, j) = (*this)(i, j) + obj(i, j);
+		}
+	}
+	return new_matrix;
+}
+
+linalg::Matrix& linalg::Matrix::operator+=(const Matrix& obj) {
+	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
+		std::cout << "The sizes of the matrices don't match";
+		exit(1);
+	}
+
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			(*this)(i, j) += obj(i, j);
+		}
+	}
+	return *this;
+}
+
+
 
