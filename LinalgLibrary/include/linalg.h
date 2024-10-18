@@ -36,12 +36,15 @@ namespace linalg {
 		Matrix& operator*=(double ch);
 		bool operator==(const Matrix& obj) const;
 		bool operator!=(const Matrix& obj) const;
-			 
-		
+			 		
 		size_t rows() const;
 		size_t columns() const;
 		bool empty() const;
 		void reshape(size_t rows, size_t columns);
+
+		double norm() const;
+		double trace() const;
+		double det() const;
 
 	private:
 		double* m_ptr = nullptr;

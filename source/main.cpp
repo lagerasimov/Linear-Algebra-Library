@@ -97,4 +97,7 @@ int main() {
 	bool y1 = (A1 != B1);
 	std::cout << x1 << std::endl;
 	std::cout << y1 << std::endl;
+
+	std::cout << A;
+	std::cout << A.norm() << std::endl;
 }

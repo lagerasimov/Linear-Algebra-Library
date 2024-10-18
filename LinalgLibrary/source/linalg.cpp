@@ -4,6 +4,7 @@
 #include <sstream>
 //#include <string>
 #include <iomanip> //для std::setw
+#include <cmath>
 
 size_t linalg::Matrix::rows() const {
 	return m_rows;
@@ -328,6 +329,20 @@ bool linalg::Matrix::operator==(const Matrix& obj) const {
 
 bool linalg::Matrix::operator!=(const Matrix& obj) const {
 	return !(*this == obj);
+}
+
+double linalg::Matrix::norm() const{
+	if ((*this).empty()) {
+		std::cout << "Matrix is empty. So Frobenius norm can't be found";
+		exit(1);
+	}
+	double norma2 = 0.0;
+	for (int i = 0; i < m_rows; i++) {
+		for (int j = 0; j < m_columns; j++) {
+			norma2 += pow(abs((*this)(i, j)), 2);
+		}
+	}
+	return sqrt(norma2);
 }
 
 
