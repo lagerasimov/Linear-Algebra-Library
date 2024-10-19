@@ -51,53 +51,75 @@ int main() {
 	//std::cout << Q << '\n';
 	//std::cout << R << '\n';
 
-	linalg::Matrix M = { {1, 2, 3, 4}, {5, 6, 7, 8} };
-	linalg::Matrix N = { {1, 1, 1, 1}, {-1, -1, -1, -1} };
+	//linalg::Matrix M = { {1, 2, 3, 4}, {5, 6, 7, 8} };
+	//linalg::Matrix N = { {1, 1, 1, 1}, {-1, -1, -1, -1} };
 
-	linalg::Matrix P = M + N;
-	std::cout << P << std::endl;
+	//linalg::Matrix P = M + N;
+	//std::cout << P << std::endl;
 
-	linalg::Matrix Q = M - N;
-	std::cout << Q << std::endl;
+	//linalg::Matrix Q = M - N;
+	//std::cout << Q << std::endl;
 
-	M -= N;
-	std::cout << M << std::endl;
+	//M -= N;
+	//std::cout << M << std::endl;
 
-	M += N;
-	std::cout << M << std::endl;
+	//M += N;
+	//std::cout << M << std::endl;
 
-	linalg::Matrix K = 10 * M;
-	std::cout << K << std::endl;
+	//linalg::Matrix K = 10 * M;
+	//std::cout << K << std::endl;
 
-	K *= 10;
-	std::cout << K << std::endl;
+	//K *= 10;
+	//std::cout << K << std::endl;
 
-	linalg::Matrix R = M * 10;
-	std::cout << R << std::endl;
+	//linalg::Matrix R = M * 10;
+	//std::cout << R << std::endl;
 
-	M -= 10 * N;
-	std::cout << M << std::endl;
-	
-	M += 10 * N;
-	std::cout << M << std::endl;
+	//M -= 10 * N;
+	//std::cout << M << std::endl;
+	//
+	//M += 10 * N;
+	//std::cout << M << std::endl;
 
-	linalg::Matrix A = { {1, 2, 1}, {4, 2, 2}, {0, 1, 7} };
-	linalg::Matrix B = { {7, 5, 1}, {2, 1, 2}, {4, 3, 4} };
-	linalg::Matrix D = A * B;
-	std::cout << D << std::endl;
-	A *= B;
-	bool x = (A == B);	
-	bool y = (A != B);
-	std::cout << x << std::endl;
-	std::cout << y << std::endl;
+	//linalg::Matrix A = { {1, 2, 1}, {4, 2, 2}, {0, 1, 7} };
+	//linalg::Matrix B = { {7, 5, 1}, {2, 1, 2}, {4, 3, 4} };
+	//linalg::Matrix D = A * B;
+	//std::cout << D << std::endl;
+	//A *= B;
+	//bool x = (A == B);	
+	//bool y = (A != B);
+	//std::cout << x << std::endl;
+	//std::cout << y << std::endl;
 
-	linalg::Matrix A1 = { {1, 2}, {3, 4}, {5, 6}, {7, 8} };
-	linalg::Matrix B1 = { {1, 2}, {3, 4}, {5, 6}, {7, 8} };
-	bool x1 = (A1 == B1);
-	bool y1 = (A1 != B1);
-	std::cout << x1 << std::endl;
-	std::cout << y1 << std::endl;
+	//linalg::Matrix A1 = { {1, 2}, {3, 4}, {5, 6}, {7, 8} };
+	//linalg::Matrix B1 = { {1, 2}, {3, 4}, {5, 6}, {7, 8} };
+	//bool x1 = (A1 == B1);
+	//bool y1 = (A1 != B1);
+	//std::cout << x1 << std::endl;
+	//std::cout << y1 << std::endl;
 
+	linalg::Matrix L = { { 1, 2, 3, 4}, {5, 4, 3, 2}, {7, 8, 5, 6} };
+	std::cout << L;
+	std::cout << L.norm() << std::endl;
+
+	linalg::Matrix O = { {1, 2, 4, 7}, {7, 8, 9, 1}, {1, 5, 9, 11 }, {4, 5, 6, 7} };
+	std::cout << O;
+	std::cout << O.trace() << std::endl;
+
+	linalg::Matrix A = { {10, 5}, {2, 4} };
 	std::cout << A;
-	std::cout << A.norm() << std::endl;
+	std::cout << A.det() << std::endl;
+
+	linalg::Matrix D = { {11, 12, 13, 14}, {51, 529, 53, 54}, {77, 78, 74, 75}, {91, 92, 93, 949} };
+	std::cout << D;
+	std::cout << D.det() << std::endl;
+
+	linalg::Matrix Q = { };
+	std::cout << Q;
+	std::cout << Q.det() << std::endl;
+
+	linalg::Matrix G = { {1, 2, 3, 4}, {5, 6, 7, 8} };
+	std::cout << G;
+	std::cout << G.det() << std::endl;
+
 }

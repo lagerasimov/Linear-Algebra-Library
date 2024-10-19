@@ -178,7 +178,7 @@ size_t* widths(const linalg::Matrix& m) {
 std::ostream& linalg::operator<<(std::ostream& potok, const linalg::Matrix& m) {
 	size_t* sizes = widths(m);
 	if (m.rows() == 0 || m.columns() == 0) {
-		potok << "|empty|";
+		potok << "|empty|\n";
 		return potok;
 	}
 	for (int i = 0; i < m.rows(); ++i) {
@@ -345,6 +345,51 @@ double linalg::Matrix::norm() const{
 	return sqrt(norma2);
 }
 
+double linalg::Matrix::trace() const {
+	if (m_rows != m_columns) {
+		std::cout << "The matrix must be square";
+		exit(1);
+	}
+	double sled = 0.0;
+	for (int i = 0; i < m_rows; i++) {
+		sled += (*this)(i, i);
+	}
+	return sled;
+}
+
+double linalg::Matrix::det() const {
+	if (m_rows != m_columns) {
+		std::cout << "The matrix must be square";
+		exit(1);
+	}
+
+	if (m_rows == 2) {
+		return (*this)(0, 0) * (*this)(1, 1) - (*this)(1, 0) * (*this)(0, 1);
+	}
+
+	double d = 0;
+
+	for (int j = 0; j < m_columns; j++) {
+		linalg::Matrix obj(m_rows - 1, m_columns - 1); 
+		for (int k = 0; k < obj.m_rows; k++) {
+			for (int p = 0; p < obj.m_columns; p++) {
+				if (p < j) {
+					obj(k, p) = (*this)(k+1, p);
+				}
+				if (p >= j) {
+					obj(k, p) = (*this)(k + 1, p + 1);
+				}
+			}
+		}
+		d += pow(-1, j) * (*this)(0, j) * obj.det();
+
+		obj.m_rows = 0;
+		obj.m_columns = 0;
+		obj.m_ptr = nullptr;
+	}
+	return d;
+}
 
 
 
+                
