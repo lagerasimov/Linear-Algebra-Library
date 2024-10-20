@@ -98,28 +98,52 @@ int main() {
 	//std::cout << x1 << std::endl;
 	//std::cout << y1 << std::endl;
 
-	linalg::Matrix L = { { 1, 2, 3, 4}, {5, 4, 3, 2}, {7, 8, 5, 6} };
-	std::cout << L;
-	std::cout << L.norm() << std::endl;
+	//linalg::Matrix L = { { 1, 2, 3, 4}, {5, 4, 3, 2}, {7, 8, 5, 6} };
+	//std::cout << L;
+	//std::cout << L.norm() << std::endl;
 
-	linalg::Matrix O = { {1, 2, 4, 7}, {7, 8, 9, 1}, {1, 5, 9, 11 }, {4, 5, 6, 7} };
-	std::cout << O;
-	std::cout << O.trace() << std::endl;
+	//linalg::Matrix O = { {1, 2, 4, 7}, {7, 8, 9, 1}, {1, 5, 9, 11 }, {4, 5, 6, 7} };
+	//std::cout << O;
+	//std::cout << O.trace() << std::endl;
 
-	linalg::Matrix A = { {10, 5}, {2, 4} };
-	std::cout << A;
-	std::cout << A.det() << std::endl;
+	//linalg::Matrix A = { {10, 5}, {2, 4} };
+	//std::cout << A;
+	//std::cout << A.det() << std::endl;
 
-	linalg::Matrix D = { {11, 12, 13, 14}, {51, 529, 53, 54}, {77, 78, 74, 75}, {91, 92, 93, 949} };
-	std::cout << D;
-	std::cout << D.det() << std::endl;
+	//linalg::Matrix D = { {11, 12, 13, 14}, {51, 529, 53, 54}, {77, 78, 74, 75}, {91, 92, 93, 949} };
+	//std::cout << D;
+	//std::cout << D.det() << std::endl;
 
-	linalg::Matrix Q = { };
-	std::cout << Q;
-	std::cout << Q.det() << std::endl;
+	//linalg::Matrix Q = { };
+	//std::cout << Q;
+	//std::cout << Q.det() << std::endl;
 
-	linalg::Matrix G = { {1, 2, 3, 4}, {5, 6, 7, 8} };
-	std::cout << G;
-	std::cout << G.det() << std::endl;
+	//linalg::Matrix G = { {1, 2, 3, 4}, {5, 6, 7, 8} };
+	//std::cout << G;
+	//std::cout << G.det() << std::endl;
 
+	linalg::Matrix left = { {1, 2, 3, 4}, {5, 6, 7, 8} };
+	linalg::Matrix right = { {5, 6, 7, 8}, {1, 2, 3, 4} };
+
+	linalg::Matrix result = concatenate(left, right);
+	std::cout << result << std::endl;
+
+	linalg::Matrix transResult = transpose(result);
+	std::cout << transResult << std::endl;
+
+	linalg::Matrix B = { 1 };
+	std::cout << B.det() <<std::endl;
+
+	linalg::Matrix A = { {1, 2, 3, 4} , {5, 6, 7, 8}, {1, 99, 8, 77}, {13, 140, 15, 176} };
+	std::cout << A << std::endl;
+	linalg::Matrix obratA = invert(A);
+	std::cout << obratA << std::endl;
+
+	linalg::Matrix W = { {1, 1}, {1, 1} };
+	std::cout << power(W, 1) << std::endl;
+	std::cout << power(W, 5) << std::endl;
+
+	linalg::Matrix K = { {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16} };
+	std::cout << power(K, 4) << std::endl;
+	std::cout << power(W, -9) << std::endl;
 }

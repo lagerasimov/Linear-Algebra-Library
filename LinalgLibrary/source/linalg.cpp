@@ -363,6 +363,10 @@ double linalg::Matrix::det() const {
 		exit(1);
 	}
 
+	if (m_rows == 1) {
+		return (*this)(0, 0);
+	}
+
 	if (m_rows == 2) {
 		return (*this)(0, 0) * (*this)(1, 1) - (*this)(1, 0) * (*this)(0, 1);
 	}
@@ -385,6 +389,82 @@ double linalg::Matrix::det() const {
 	}
 	return d;
 }
+
+linalg::Matrix linalg::concatenate(const linalg::Matrix& left, const linalg::Matrix& right) {
+	if (left.rows() != right.rows()) {
+		std::cout << "Left and right matrix must have the same number of rows";
+		exit(1);
+	}
+
+	linalg::Matrix new_matrix(left.rows(), left.columns() + right.columns());
+	for (int i = 0; i < left.rows(); i++) {
+		for (int j = 0; j < left.columns(); j++) {
+			new_matrix(i, j) = left(i, j);
+		}
+		for (int j = left.columns(); j < left.columns() + right.columns(); j++) {
+			new_matrix(i, j) = right(i, j - left.columns());
+		}
+	}
+	return new_matrix;
+};
+
+
+linalg::Matrix linalg::transpose(const Matrix& obj) {
+	linalg::Matrix new_matrix(obj.columns(), obj.rows());
+	for (int i = 0; i < obj.rows(); i++) {
+		for (int j = 0; j < obj.columns(); j++) {
+			new_matrix(j, i) = obj(i, j);
+		}
+	}
+	return new_matrix;
+};
+
+linalg::Matrix linalg::invert(const Matrix& obj) {
+	if (obj.rows() != obj.columns()) {
+		std::cout << "The matrix must be square";
+		exit(1);
+	}
+
+	linalg::Matrix algebM(obj.rows(), obj.columns());
+	for (int i = 0; i < obj.rows(); i++) {
+		for (int j = 0; j < obj.columns(); j++) {
+			linalg::Matrix private_matrix(obj.rows() - 1, obj.columns() - 1);
+			
+			for (int k = 0; k < obj.rows() - 1; k++) {
+				for (int p = 0; p < obj.columns() - 1; p++) {
+					if (k < i && p < j) {
+						private_matrix(k, p) = obj(k, p);
+					}
+					if (k >= i && p < j) {
+						private_matrix(k, p) = obj(k+1, p);
+					}
+					if (k < i && p >= j) {
+						private_matrix(k, p) = obj(k, p+1);
+					}
+					if (k >= i && p >= j) {
+						private_matrix(k, p) = obj(k+1, p+1);
+					}
+				}
+			}
+			algebM(i, j) = pow(-1, i + j) * private_matrix.det();
+		}
+	}
+	return 1/(obj.det())*transpose(algebM);
+
+};
+
+linalg::Matrix linalg::power(const Matrix& obj, int a) {
+	if (a <= 0) {
+		std::cout << "The power must be a natural number";
+		exit(1);
+	}
+	linalg::Matrix new_matrix(obj.rows(), obj.columns());
+	new_matrix = obj;
+	for (int i = 1; i < a; i++) {
+		new_matrix *= obj;
+	}
+	return new_matrix;
+};
 
 
 
