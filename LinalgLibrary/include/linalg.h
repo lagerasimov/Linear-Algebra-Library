@@ -46,6 +46,7 @@ namespace linalg {
 		double trace() const;
 		double det() const;
 
+		Matrix Minor(size_t row, size_t column) const;
 
 	private:
 		double* m_ptr = nullptr;
@@ -54,7 +55,7 @@ namespace linalg {
 	Matrix concatenate(const Matrix& left, const Matrix& right);
 	Matrix transpose(const Matrix& obj);
 	Matrix invert(const Matrix& obj);
-	Matrix power(const Matrix& obj, int a);
+	Matrix power(const Matrix& obj, size_t a);
 	std::ostream& operator<<(std::ostream& potok, const Matrix& m);
 	Matrix operator*(double ch, const Matrix& obj);
 }
