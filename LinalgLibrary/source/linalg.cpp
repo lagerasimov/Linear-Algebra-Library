@@ -89,7 +89,7 @@ linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a) {
 	
 	for (const auto& el : a) {
 		if (el.size() != m_columns) {
-			std::runtime_error("The rows of matrix must have the equal size");
+			throw std::runtime_error("The rows of matrix must have the equal size");
 		}
 	}
 
@@ -144,32 +144,27 @@ linalg::Matrix& linalg::Matrix::operator=(Matrix&& obj) noexcept{
 
 double& linalg::Matrix::operator() (size_t row, size_t column) {
 	if (row >= m_rows || column >= m_columns) {
-		std::out_of_range("The indexes can't go beyond the size of the matrix");
+		throw std::out_of_range("The indexes can't go beyond the size of the matrix");
 	}
 	return m_ptr[row * m_columns + column];
 }
 
 const double& linalg::Matrix::operator() (size_t row, size_t column) const {
 	if (row >= m_rows || column >= m_columns) {
-		std::out_of_range("The indexes can't go beyond the size of the matrix");
+		throw std::out_of_range("The indexes can't go beyond the size of the matrix");
 		exit(1);
 	}
 	return m_ptr[row * m_columns + column];
 }
 
-size_t element_length(double a) {
-	std::ostringstream out;
-	out << a;
-	std::string s = out.str();
-	out.str("");
-	return s.size();
-}
-
 size_t* widths(const linalg::Matrix& m) {
+	std::ostringstream out;
 	size_t* widths = new size_t[m.columns()]();
-	for (int j = 0; j < m.columns(); j++) { 
+	for (int j = 0; j < m.columns(); j++) {
 		for (int i = 0; i < m.rows(); i++) {
-			widths[j] = std::max(element_length(m(i, j)), widths[j]);
+			out << m(i, j);
+			widths[j] = std::max(out.str().size(), widths[j]);
+			out.str("");
 		}
 	}
 	return widths;
@@ -197,8 +192,7 @@ std::ostream& linalg::operator<<(std::ostream& potok, const linalg::Matrix& m) {
 
 linalg::Matrix linalg::Matrix::operator+(const Matrix& obj) const {
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
-		std::runtime_error("The sizes of the matrices don't match");
-		exit(1);
+		throw std::runtime_error("The sizes of the matrices don't match");
 	}
 
 	Matrix new_matrix(m_rows, m_columns);
@@ -212,7 +206,7 @@ linalg::Matrix linalg::Matrix::operator+(const Matrix& obj) const {
 
 linalg::Matrix& linalg::Matrix::operator+=(const Matrix& obj) {
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
-		std::runtime_error("The sizes of the matrices don't match");
+		throw std::runtime_error("The sizes of the matrices don't match");
 		exit(1);
 	}
 
@@ -226,7 +220,7 @@ linalg::Matrix& linalg::Matrix::operator+=(const Matrix& obj) {
 
 linalg::Matrix linalg::Matrix::operator-(const Matrix& obj) const {
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
-		std::runtime_error("The sizes of the matrices don't match");
+		throw std::runtime_error("The sizes of the matrices don't match");
 	}
 
 	Matrix new_matrix(m_rows, m_columns);
@@ -242,7 +236,7 @@ linalg::Matrix linalg::Matrix::operator-(const Matrix& obj) const {
 
 linalg::Matrix& linalg::Matrix::operator-=(const Matrix& obj) {
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
-		std::runtime_error("The sizes of the matrices don't match");
+		throw std::runtime_error("The sizes of the matrices don't match");
 	}
 
 	for (int i = 0; i < m_rows; i++) {
@@ -255,7 +249,7 @@ linalg::Matrix& linalg::Matrix::operator-=(const Matrix& obj) {
 
 linalg::Matrix linalg::Matrix::operator*(const Matrix& obj) const {
 	if (m_columns != obj.m_rows) {
-		std::runtime_error("The number of columns of the first matrix must match the number of rows of the second matrix");
+		throw std::runtime_error("The number of columns of the first matrix must match the number of rows of the second matrix");
 	}
 
 	linalg::Matrix new_matrix(m_rows, obj.m_columns);
@@ -301,7 +295,7 @@ linalg::Matrix& linalg::Matrix::operator*=(double ch){
 
 linalg::Matrix& linalg::Matrix::operator*=(const Matrix& obj) {
 	if (m_columns != obj.m_rows) {
-		std::runtime_error("The number of columns of the first matrix must match the number of rows of the second matrix");
+		throw std::runtime_error("The number of columns of the first matrix must match the number of rows of the second matrix");
 	}
 
 	Matrix new_matrix = (*this) * obj;
@@ -329,7 +323,7 @@ bool linalg::Matrix::operator!=(const Matrix& obj) const {
 
 double linalg::Matrix::norm() const{
 	if ((*this).empty()) {
-		std::runtime_error("Matrix is empty. So Frobenius norm can't be found");
+		throw std::runtime_error("Matrix is empty. So Frobenius norm can't be found");
 		exit(1);
 	}
 	double norma2 = 0.0;
@@ -343,7 +337,7 @@ double linalg::Matrix::norm() const{
 
 double linalg::Matrix::trace() const {
 	if (m_rows != m_columns) {
-		std::runtime_error("The matrix must be square");
+		throw std::runtime_error("The matrix must be square");
 	}
 	double sled = 0.0;
 	for (int i = 0; i < m_rows; i++) {
@@ -354,7 +348,7 @@ double linalg::Matrix::trace() const {
 
 double linalg::Matrix::det() const {
 	if (m_rows != m_columns) {
-		std::runtime_error("The matrix must be square");
+		throw std::runtime_error("The matrix must be square");
 	}
 
 	if (m_rows == 1) {
@@ -372,7 +366,7 @@ double linalg::Matrix::det() const {
 		for (int k = 0; k < m_rows - 1; k++) {
 			for (int p = 0; p < m_columns - 1; p++) {
 				if (p < j) {
-					obj(k, p) = (*this)(k+1, p);
+					obj(k, p) = (*this)(k + 1, p);
 				}
 				if (p >= j) {
 					obj(k, p) = (*this)(k + 1, p + 1);
@@ -386,15 +380,15 @@ double linalg::Matrix::det() const {
 
 linalg::Matrix linalg::concatenate(const linalg::Matrix& left, const linalg::Matrix& right) {
 	if (left.rows() != right.rows()) {
-		std::runtime_error("Left and right matrix must have the same number of rows");
+		throw std::runtime_error("Left and right matrix must have the same number of rows");
 	}
 
 	linalg::Matrix new_matrix(left.rows(), left.columns() + right.columns());
-	for (int i = 0; i < left.rows(); i++) {
-		for (int j = 0; j < left.columns(); j++) {
+	for (size_t i = 0; i < left.rows(); i++) {
+		for (size_t j = 0; j < left.columns(); j++) {
 			new_matrix(i, j) = left(i, j);
 		}
-		for (int j = left.columns(); j < left.columns() + right.columns(); j++) {
+		for (size_t j = left.columns(); j < left.columns() + right.columns(); j++) {
 			new_matrix(i, j) = right(i, j - left.columns());
 		}
 	}
@@ -414,10 +408,10 @@ linalg::Matrix linalg::transpose(const Matrix& obj) {
 
 linalg::Matrix linalg::invert(const Matrix& obj) {
 	if (obj.rows() != obj.columns()) {
-		std::runtime_error("The matrix must be square");
+		throw std::runtime_error("The matrix must be square");
 	}
 	if (obj.rows() == 0) {
-		std::runtime_error("The matrix mustn't be empty");
+		throw std::runtime_error("The matrix mustn't be empty");
 	}
 
 	linalg::Matrix algebM(obj.rows(), obj.columns());
@@ -450,7 +444,7 @@ linalg::Matrix linalg::invert(const Matrix& obj) {
 
 linalg::Matrix linalg::power(const Matrix& obj, int a) {
 	if (a <= 0) {
-		std::invalid_argument("The power must be a natural number");
+		throw std::invalid_argument("The power must be a natural number");
 		exit(1);
 	}
 	linalg::Matrix new_matrix(obj.rows(), obj.columns());
