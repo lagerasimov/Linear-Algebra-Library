@@ -382,10 +382,6 @@ double linalg::Matrix::det() const {
 			}
 		}
 		d += pow(-1, j) * (*this)(0, j) * obj.det();
-
-		obj.m_rows = 0;
-		obj.m_columns = 0;
-		obj.m_ptr = nullptr;
 	}
 	return d;
 }
