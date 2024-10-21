@@ -306,7 +306,7 @@ linalg::Matrix& linalg::Matrix::operator*=(const Matrix& obj) {
 	return *this;
 }
 
-bool linalg::Matrix::operator==(const Matrix& obj) const {
+bool linalg::Matrix::operator==(const Matrix& obj) const noexcept{
 	if (m_rows != obj.m_rows || m_columns != obj.m_columns) {
 		return false;
 	}
@@ -320,7 +320,7 @@ bool linalg::Matrix::operator==(const Matrix& obj) const {
 	return true;
 }
 
-bool linalg::Matrix::operator!=(const Matrix& obj) const {
+bool linalg::Matrix::operator!=(const Matrix& obj) const noexcept{
 	return !(*this == obj);
 }
 
@@ -422,15 +422,25 @@ linalg::Matrix linalg::invert(const Matrix& obj) {
 
 };
 
-linalg::Matrix linalg::power(const Matrix& obj, size_t a) {
-	if (a <= 0) {
-		throw std::invalid_argument("The power must be a natural number");
+linalg::Matrix linalg::power(const Matrix& obj, int a) {
+
+	if (a < 0) {
+		return power(invert(obj), abs(a));
 	}
 
-	linalg::Matrix new_matrix(obj);
-	for (size_t i = 1; i < a; i++) {
+	linalg::Matrix new_matrix(obj.rows(), obj.columns());
+	for (size_t i = 0; i < obj.rows(); i++) {
+		new_matrix(i, i) = 1;
+	}
+
+	if (a == 0) {
+		return new_matrix;
+	}
+
+	for (size_t i = 0; i < a; i++) {
 		new_matrix *= obj;
 	}
+
 	return new_matrix;
 };
 

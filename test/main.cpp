@@ -19,4 +19,9 @@ int main() {
 	linalg::Matrix B = { {506, 66, 2315.1}, {66, 11, 392.3} };
 	std::cout << Kramer(B) << std::endl;
  
+	linalg::Matrix X = { {11, 12, 13}, {17, 18, 15}, {19, 21, 88} };
+	std::cout << power(X, 7) << std::endl;
+
+	linalg::Matrix Y = { {11, 12, 13}, {17, 18, 15}, {19, 21, 88} };
+	std::cout << power(Y, -2) << std::endl;
 }
