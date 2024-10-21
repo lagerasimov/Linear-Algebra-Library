@@ -5,7 +5,7 @@
 namespace linalg {
 	class Matrix {
 	public:
-		Matrix(); //конструктор по умолчанию
+		Matrix() noexcept; //конструктор по умолчанию
 
 		//конструкторы с параметрами
 		Matrix(size_t rows, size_t columns);
@@ -37,16 +37,16 @@ namespace linalg {
 		bool operator==(const Matrix& obj) const;
 		bool operator!=(const Matrix& obj) const;
 			 		
-		size_t rows() const;
-		size_t columns() const;
-		bool empty() const;
+		size_t rows() const noexcept;
+		size_t columns() const noexcept;
+		bool empty() const noexcept;
 		void reshape(size_t rows, size_t columns);
 
 		double norm() const;
 		double trace() const;
 		double det() const;
 
-		Matrix minor(size_t row, size_t column) const;
+		double minor(size_t row, size_t column) const;
 
 	private:
 		double* m_ptr = nullptr;
@@ -56,6 +56,7 @@ namespace linalg {
 	Matrix transpose(const Matrix& obj);
 	Matrix invert(const Matrix& obj);
 	Matrix power(const Matrix& obj, size_t a);
+	Matrix Kramer(const Matrix& obj);
 	std::ostream& operator<<(std::ostream& potok, const Matrix& m);
 	Matrix operator*(double ch, const Matrix& obj);
 }

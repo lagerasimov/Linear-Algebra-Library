@@ -6,15 +6,15 @@
 #include <iomanip> //для std::setw
 #include <cmath>
 
-size_t linalg::Matrix::rows() const {
+size_t linalg::Matrix::rows() const noexcept{
 	return m_rows;
 }
 
-size_t linalg::Matrix::columns() const{
+size_t linalg::Matrix::columns() const noexcept{
 	return m_columns;
 }
 
-bool linalg::Matrix::empty() const {
+bool linalg::Matrix::empty() const noexcept{
 	return (m_rows == 0 || m_columns == 0);
 }
 
@@ -29,12 +29,12 @@ void linalg::Matrix::reshape(size_t rows, size_t columns) {
 
 }
 
-linalg::Matrix::Matrix() {
+linalg::Matrix::Matrix() noexcept{
 
 }
 
 linalg::Matrix::Matrix(size_t rows, size_t columns) {
-	if (rows <= 0 || columns <= 0) {
+	if (rows == 0 || columns == 0) {
 		throw std::runtime_error("Matrix dimensions must be greater than zero");
 	}
 	m_rows = rows;
@@ -43,7 +43,7 @@ linalg::Matrix::Matrix(size_t rows, size_t columns) {
 }
 
 linalg::Matrix::Matrix(size_t rows) {
-	if (rows <= 0) {
+	if (rows == 0) {
 		throw std::runtime_error("Matrix dimensions must be greater than zero");
 	}
 	m_rows = rows;
@@ -63,13 +63,9 @@ linalg::Matrix::Matrix(const Matrix& m) {
 }
 
 linalg::Matrix::Matrix(Matrix&& m) noexcept{
-	m_rows = m.m_rows;
-	m_columns = m.m_columns;
-	m_ptr = m.m_ptr;
-
-	m.m_rows = 0;
-	m.m_columns = 0;
-	m.m_ptr = nullptr;
+	std::swap(m_ptr, m.m_ptr);
+	std::swap(m_rows, m.m_rows);
+	std::swap(m_columns, m.m_columns);
 }
 
 
@@ -316,7 +312,7 @@ bool linalg::Matrix::operator==(const Matrix& obj) const {
 	}
 	for (size_t i = 0; i < m_rows; i++) {
 		for (size_t j = 0; j < m_columns; j++) {
-			if ((*this)(i, j) != obj(i, j)) {
+			if (fabs((*this)(i, j) - obj(i, j)) >= 0.00001) {
 				return false;
 			}
 		}
@@ -335,7 +331,7 @@ double linalg::Matrix::norm() const{
 	double norma2 = 0.0;
 	for (size_t i = 0; i < m_rows; i++) {
 		for (size_t j = 0; j < m_columns; j++) {
-			norma2 += pow(abs((*this)(i, j)), 2);
+			norma2 += pow(fabs((*this)(i, j)), 2);
 		}
 	}
 	return sqrt(norma2);
@@ -375,7 +371,7 @@ double linalg::Matrix::det() const {
 	double d = 0;
 
 	for (size_t j = 0; j < m_columns; j++) {
-		d += pow(-1, j) * (*this)(0, j) * (*this).minor(0, j).det();
+		d += pow(-1, j) * (*this)(0, j) * (*this).minor(0, j);
 	}
 	return d;
 }
@@ -419,7 +415,7 @@ linalg::Matrix linalg::invert(const Matrix& obj) {
 	linalg::Matrix algebM(obj.rows(), obj.columns());
 	for (size_t i = 0; i < obj.rows(); i++) {
 		for (size_t j = 0; j < obj.columns(); j++) {
-			algebM(i, j) = pow(-1, i + j) * (obj.minor(i, j)).det();
+			algebM(i, j) = pow(-1, i + j) * obj.minor(i, j);
 		}
 	}
 	return 1/(obj.det())*transpose(algebM);
@@ -430,15 +426,15 @@ linalg::Matrix linalg::power(const Matrix& obj, size_t a) {
 	if (a <= 0) {
 		throw std::invalid_argument("The power must be a natural number");
 	}
-	linalg::Matrix new_matrix(obj.rows(), obj.columns());
-	new_matrix = obj;
+
+	linalg::Matrix new_matrix(obj);
 	for (size_t i = 1; i < a; i++) {
 		new_matrix *= obj;
 	}
 	return new_matrix;
 };
 
-linalg::Matrix linalg::Matrix::minor(size_t row, size_t column) const{
+double linalg::Matrix::minor(size_t row, size_t column) const{
 	if (m_rows != m_columns) {
 		throw std::runtime_error("The matrix must be square");
 	}
@@ -474,6 +470,37 @@ linalg::Matrix linalg::Matrix::minor(size_t row, size_t column) const{
 		}
 	}
 
-	return private_matrix;
+	return private_matrix.det();
+}
+
+linalg::Matrix linalg::Kramer(const Matrix& obj) {
+	if (obj.columns() != obj.rows() + 1) {
+		throw::std::runtime_error("The number of equations must be equal to the number of unknown variables");
+	}
+
+	Matrix solutions(obj.rows());
+
+	Matrix M(obj.rows(), obj.rows());
+	for (size_t i = 0; i < obj.rows(); i++) {
+		for (size_t j = 0; j < obj.columns() - 1; j++) {
+			M(i, j) = obj(i, j);
+		}
+	}
+
+	if (M.det() == 0) {
+		throw std::runtime_error("The system has infinitely many solutions or is incompatible");
+	}
+
+	Matrix M1(M);
+
+	for (size_t j = 0; j < obj.rows(); j++) {
+		for (size_t i = 0; i < obj.rows(); i++) {
+			M1(i, j) = obj(i, obj.columns() - 1);
+		}
+		solutions(j, 0) = M1.det() / M.det();
+		M1 = M;
+	}
+
+	return solutions;
 }
 
