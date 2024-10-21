@@ -34,12 +34,18 @@ linalg::Matrix::Matrix() {
 }
 
 linalg::Matrix::Matrix(size_t rows, size_t columns) {
+	if (rows <= 0 || columns <= 0) {
+		throw std::runtime_error("Matrix dimensions must be greater than zero");
+	}
 	m_rows = rows;
 	m_columns = columns;
 	m_ptr = new double[m_rows * m_columns]();
 }
 
 linalg::Matrix::Matrix(size_t rows) {
+	if (rows <= 0) {
+		throw std::runtime_error("Matrix dimensions must be greater than zero");
+	}
 	m_rows = rows;
 	m_columns = 1;
 }
@@ -79,9 +85,7 @@ linalg::Matrix::Matrix(std::initializer_list<double> a) {
 
 linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> a) {
 	if (a.size() == 0) {
-		m_rows = 0;
-		m_columns = 0;
-		return;
+		throw std::runtime_error("The matrix can't be empty");
 	}
 	
 	m_rows = a.size();
@@ -152,7 +156,6 @@ double& linalg::Matrix::operator() (size_t row, size_t column) {
 const double& linalg::Matrix::operator() (size_t row, size_t column) const {
 	if (row >= m_rows || column >= m_columns) {
 		throw std::out_of_range("The indexes can't go beyond the size of the matrix");
-		exit(1);
 	}
 	return m_ptr[row * m_columns + column];
 }
@@ -175,7 +178,7 @@ size_t* widths(const linalg::Matrix& m) {
 
 std::ostream& linalg::operator<<(std::ostream& potok, const linalg::Matrix& m) {
 	size_t* sizes = widths(m);
-	if (m.rows() == 0 || m.columns() == 0) {
+	if (m.empty()) {
 		potok << "|empty|\n";
 		return potok;
 	}
@@ -327,7 +330,6 @@ bool linalg::Matrix::operator!=(const Matrix& obj) const {
 double linalg::Matrix::norm() const{
 	if ((*this).empty()) {
 		throw std::runtime_error("Matrix is empty. So Frobenius norm can't be found");
-		exit(1);
 	}
 	double norma2 = 0.0;
 	for (size_t i = 0; i < m_rows; i++) {
@@ -342,6 +344,9 @@ double linalg::Matrix::trace() const {
 	if (m_rows != m_columns) {
 		throw std::runtime_error("The matrix must be square");
 	}
+	if ((*this).empty()) {
+		throw std::runtime_error("The matrix mustn't be empty");
+	}
 	double sled = 0.0;
 	for (size_t i = 0; i < m_rows; i++) {
 		sled += (*this)(i, i);
@@ -354,7 +359,7 @@ double linalg::Matrix::det() const {
 		throw std::runtime_error("The matrix must be square");
 	}
 
-	if (m_rows == 0 || m_columns == 0) {
+	if ((*this).empty()) {
 		throw std::runtime_error("The matrix mustn't be empty");
 	}
 
@@ -369,18 +374,7 @@ double linalg::Matrix::det() const {
 	double d = 0;
 
 	for (size_t j = 0; j < m_columns; j++) {
-		linalg::Matrix obj(m_rows - 1, m_columns - 1); 
-		for (size_t k = 0; k < m_rows - 1; k++) {
-			for (size_t p = 0; p < m_columns - 1; p++) {
-				if (p < j) {
-					obj(k, p) = (*this)(k + 1, p);
-				}
-				if (p >= j) {
-					obj(k, p) = (*this)(k + 1, p + 1);
-				}
-			}
-		}
-		d += pow(-1, j) * (*this)(0, j) * obj.det();
+		d += pow(-1, j) * (*this)(0, j) * (*this).minor(0, j).det();
 	}
 	return d;
 }
@@ -417,32 +411,14 @@ linalg::Matrix linalg::invert(const Matrix& obj) {
 	if (obj.rows() != obj.columns()) {
 		throw std::runtime_error("The matrix must be square");
 	}
-	if (obj.rows() == 0) {
+	if (obj.empty()) {
 		throw std::runtime_error("The matrix mustn't be empty");
 	}
 
 	linalg::Matrix algebM(obj.rows(), obj.columns());
 	for (size_t i = 0; i < obj.rows(); i++) {
 		for (size_t j = 0; j < obj.columns(); j++) {
-			linalg::Matrix private_matrix(obj.rows() - 1, obj.columns() - 1);
-			
-			for (size_t k = 0; k < private_matrix.rows(); k++) {
-				for (size_t p = 0; p < private_matrix.columns(); p++) {
-					if (k < i && p < j) {
-						private_matrix(k, p) = obj(k, p);
-					}
-					if (k >= i && p < j) {
-						private_matrix(k, p) = obj(k+1, p);
-					}
-					if (k < i && p >= j) {
-						private_matrix(k, p) = obj(k, p+1);
-					}
-					if (k >= i && p >= j) {
-						private_matrix(k, p) = obj(k+1, p+1);
-					}
-				}
-			}
-			algebM(i, j) = pow(-1, i + j) * private_matrix.det();
+			algebM(i, j) = pow(-1, i + j) * (obj.minor(i, j)).det();
 		}
 	}
 	return 1/(obj.det())*transpose(algebM);
@@ -461,6 +437,41 @@ linalg::Matrix linalg::power(const Matrix& obj, size_t a) {
 	return new_matrix;
 };
 
-//linalg::Matrix Minor(size_t row, size_t column) {
-//
-//}
+linalg::Matrix linalg::Matrix::minor(size_t row, size_t column) const{
+	if (m_rows != m_columns) {
+		throw std::runtime_error("The matrix must be square");
+	}
+
+	if ((*this).empty()) {
+		throw std::runtime_error("The matrix mustn't be empty");
+	}
+
+	if (m_rows == 1 && m_columns == 1) {
+		throw std::runtime_error("The matrix must have more than one argument");
+	}
+
+	if (row >= m_rows || row < 0 || column >= m_columns || column < 0) {
+		throw std::out_of_range("The indexes are out of range");
+	}
+
+	linalg::Matrix private_matrix(m_rows - 1, m_columns - 1);
+
+	for (size_t k = 0; k < private_matrix.rows(); k++) {
+		for (size_t p = 0; p < private_matrix.columns(); p++) {
+			if (k < row && p < column) {
+				private_matrix(k, p) = (*this)(k, p);
+			}
+			if (k >= row && p < column) {
+				private_matrix(k, p) = (*this)(k + 1, p);
+			}
+			if (k < row && p >= column) {
+				private_matrix(k, p) = (*this)(k, p + 1);
+			}
+			if (k >= row && p >= column) {
+				private_matrix(k, p) = (*this)(k + 1, p + 1);
+			}
+		}
+	}
+
+	return private_matrix;
+}

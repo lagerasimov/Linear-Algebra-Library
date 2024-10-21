@@ -146,4 +146,10 @@ int main() {
 	linalg::Matrix K = { {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16} };
 	std::cout << power(K, 4) << std::endl;
 	//std::cout << power(W, -9) << std::endl;
+
+	//linalg::Matrix X;
+	//std::cout << X.minor(0, 0) << std::endl;
+
+	//linalg::Matrix O = { 1 };
+	//std::cout << O.minor(0, 0) << std::endl;
 }

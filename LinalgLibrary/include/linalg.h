@@ -46,7 +46,7 @@ namespace linalg {
 		double trace() const;
 		double det() const;
 
-		Matrix Minor(size_t row, size_t column) const;
+		Matrix minor(size_t row, size_t column) const;
 
 	private:
 		double* m_ptr = nullptr;
