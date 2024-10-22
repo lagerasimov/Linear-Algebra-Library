@@ -142,3 +142,208 @@ void test::testReshape() {
 		std::cout << "Error: " << exc.what() << std::endl;
 	}
 }
+
+void test::testDet() {
+	linalg::Matrix A = { {1, 2, 3, 4, 5}, {4, 5, 6, 8, 9}, {15, 14, 13, 12, 11}, {10, 9, 9, 1, 2}, {11, 12, 13, 14, 15} };
+	std::cout << "\nMatrix A:\n" << A << std::endl;
+	std::cout << "det A = " << A.det() << std::endl;
+	linalg::Matrix B = { 8 };
+	std::cout << "\nMatrix B:\n" << B << std::endl;
+	std::cout << "det B = " << B.det() << std::endl;
+}
+
+void test::testBadDet1() {
+	try {
+		linalg::Matrix A;
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << "det A = " << A.det() << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testBadDet2() {
+	try {
+		linalg::Matrix A = { {1, 2}, {3, 4}, {7, 8} };
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << "det A = " << A.det() << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testKramer() {
+	linalg::Matrix K = { {2, 5, 4, 30}, {1, 3, 2, 150}, {2, 10, 9, 110} };
+	std::cout << "Matrix K:\n" << K << std::endl;
+	std::cout << "Solution:\n" << Kramer(K) << std::endl;
+}
+
+void test::testKramerBad1() {
+	try{
+		linalg::Matrix A = { {1, 2}, {3, 4}, {7, 8} };
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << "det A = " << Kramer(A) << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testKramerBad2() {
+	try {
+		linalg::Matrix A = {};
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << "det A = " << Kramer(A) << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testKramerBad3() {
+	try {
+		linalg::Matrix A = { {1, 2, 3, 4}, {1, 2, 3, 4}, {1, 1, 1, 1} };
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << "det A = " << Kramer(A) << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testBadPower() {
+	try {
+		linalg::Matrix J;
+		std::cout << power(J, 4) << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testInitializerList() {
+	linalg::Matrix M2 = { { 1, 2, 3, 4, 5, 6 } };
+	std::cout << "One row and 6 columns:" << std::endl;
+	std::cout << M2 << std::endl;
+
+	linalg::Matrix M1 = { 1, 2, 3, 4, 5, 6 };
+	std::cout << "One column and 6 rows:" << std::endl;
+	std::cout << M1 << std::endl;
+}
+
+void test::testBadInitializerList1() {
+	try {
+		linalg::Matrix m1 = std::initializer_list<double>{};
+		std::cout << m1 << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testBadInitializerList2() {
+	try {
+		linalg::Matrix m1 = { {1, 2, 3, 4}, {5, 6, 7, 8, 9} };
+		std::cout << m1 << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testNorm() {
+	try {
+		linalg::Matrix A = { {-4, -3, -2}, {-1, 0, 1}, {2, 3, 4} };
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << A.norm() << std::endl;
+		linalg::Matrix D;
+		std::cout << "\nMatrix D:\n" << D << std::endl;
+		std::cout << D.norm() << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+
+}
+
+void test::testTranspose() {
+	try {
+		linalg::Matrix A = { {-4, -3, -2}, {-1, 0, 1}, {2, 3, 4} };
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << transpose(A) << std::endl;
+		linalg::Matrix D;
+		std::cout << "\nMatrix D:\n" << D << std::endl;
+		std::cout << transpose(D) << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testConcatence() {
+	linalg::Matrix A = { {1, 2, 3, 4}, {5, 6, 7, 8} };
+	linalg::Matrix B = { {7, 8}, {9, 10} };
+	std::cout << "Matrix A:\n" << A << std::endl;
+	std::cout << "Matrix B:\n" << B << std::endl;
+
+	std::cout << "Concatenate: \n" << concatenate(A, B) << std::endl;
+}
+
+void test::testBadConcatence1() {
+	try {
+		linalg::Matrix C = { {1, 2, 3, 4}, {5, 6, 7, 8} };
+		linalg::Matrix D = { {7, 8}, {9, 10}, {9, 1}, {5, 99} };
+		std::cout << "Matrix C:\n" << C << std::endl;
+		std::cout << "Matrix D:\n" << D << std::endl;
+
+		std::cout << "Concatenate: \n" << concatenate(C, D) << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+
+}
+
+void test::testBadConcatence2() {
+	try {
+		linalg::Matrix C = {};
+		linalg::Matrix D = {};
+		std::cout << "Matrix C:\n" << C << std::endl;
+		std::cout << "Matrix D:\n" << D << std::endl;
+
+		std::cout << "Concatenate: \n" << concatenate(C, D) << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+
+}
+
+void test::testTrace() {
+	linalg::Matrix A = { {1, 2, 4, 5}, {3, 4, 6, 7}, {8, 9, 10, 11}, {12, 13, 14, 15} };
+	std::cout << "Matrix A:\n" << A << std::endl;
+	std::cout << "Trace: " << A.trace() << std::endl;
+}
+
+void test::testBadTrace1() {
+	try {
+		linalg::Matrix A;
+		std::cout << "Trace: " << A.trace() << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testBadTrace2() {
+	try {
+		linalg::Matrix A = { {1, 2}, {3, 4}, {7, 8}, {9, 10} };
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << "Trace: " << A.trace() << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}

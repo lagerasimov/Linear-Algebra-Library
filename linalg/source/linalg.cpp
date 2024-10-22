@@ -1,8 +1,7 @@
 #include <linalg.h>
-#include <stdexcept>
-#include <iostream>
-#include <sstream>
-#include <iomanip> 
+#include <stdexcept> 
+#include <sstream> //ostringstream
+#include <iomanip> //setw
 #include <cmath>
 
 size_t linalg::Matrix::rows() const noexcept{
@@ -170,7 +169,7 @@ size_t* widths(const linalg::Matrix& m) {
 	return widths;
 }
 
-std::ostream& linalg::operator<<(std::ostream& potok, const linalg::Matrix& m) {
+std::ostream& linalg::operator<<(std::ostream& potok, const linalg::Matrix& m) noexcept{
 	if (m.empty()) {
 		potok << "|empty|\n";
 		return potok;
@@ -232,7 +231,7 @@ linalg::Matrix& linalg::Matrix::operator-=(const Matrix& obj) {
 	return *this;
 }
 
-linalg::Matrix linalg::operator*(const Matrix& obj, double ch) {
+linalg::Matrix linalg::operator*(const Matrix& obj, double ch) noexcept{
 	linalg::Matrix new_matrix(obj);
 	new_matrix *= ch;
 	return new_matrix;
@@ -244,13 +243,13 @@ linalg::Matrix linalg::operator*(const Matrix& left, const Matrix& right) {
 	return new_matrix;
 }
 
-linalg::Matrix linalg::operator*(double ch, const Matrix& obj) {
+linalg::Matrix linalg::operator*(double ch, const Matrix& obj) noexcept{
 	linalg::Matrix new_matrix(obj);
 	new_matrix *= ch;
 	return new_matrix;
 };
 
-linalg::Matrix& linalg::Matrix::operator*=(double ch){
+linalg::Matrix& linalg::Matrix::operator*=(double ch) noexcept{
 	for (size_t i = 0; i < m_rows; ++i) {
 		for (size_t j = 0; j < m_columns; ++j) {
 			(*this)(i, j) = (*this)(i, j) * ch;
@@ -364,7 +363,7 @@ linalg::Matrix linalg::concatenate(const linalg::Matrix& left, const linalg::Mat
 };
 
 
-linalg::Matrix linalg::transpose(const Matrix& obj) {
+linalg::Matrix linalg::transpose(const Matrix& obj){
 	linalg::Matrix new_matrix(obj.columns(), obj.rows());
 	for (size_t i = 0; i < obj.rows(); ++i) {
 		for (size_t j = 0; j < obj.columns(); ++j) {
@@ -427,7 +426,7 @@ double linalg::Matrix::minor(size_t row, size_t column) const{
 		throw std::runtime_error("The matrix must have more than one argument");
 	}
 
-	if (row >= m_rows || row < 0 || column >= m_columns || column < 0) {
+	if (row >= m_rows || column >= m_columns) {
 		throw std::out_of_range("The indexes are out of range");
 	}
 

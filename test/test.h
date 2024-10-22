@@ -4,7 +4,6 @@ namespace test {
 	void testBadOneParametrConstructor();
 	void testTwoParametrsConstructor();
 	void testBadTwoParametrsConstructor();
-	void testBadTwoParametrsConstructor();
 	void testCopyConstructor();
 	void testBadCopyConstructor();
 	void testMoveConstructor();
@@ -13,4 +12,23 @@ namespace test {
 	void testPowerWithInvert();
 	void testMatrixPlusNumber();
 	void testReshape();
+	void testDet();
+	void testBadDet1();
+	void testBadDet2();
+	void testKramer();
+	void testKramerBad1();
+	void testKramerBad2();
+	void testKramerBad3();
+	void testBadPower();
+	void testTranspose();
+	void testInitializerList();
+	void testBadInitializerList1();
+	void testBadInitializerList2();
+	void testNorm();
+	void testConcatence();
+	void testBadConcatence1();
+	void testBadConcatence2();
+	void testTrace();
+	void testBadTrace1();
+	void testBadTrace2();
 }
