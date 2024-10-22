@@ -72,7 +72,7 @@ void test::testBadCopyConstructor() {
 		std::cout << "The matrix m3: " << m3 << std::endl;
 	}
 	catch (const std::exception& exc) {
-		std::cout << "Error:" << exc.what() << std::endl;
+		std::cout << "Error: " << exc.what() << std::endl;
 	}
 }
 
@@ -88,4 +88,57 @@ void test::testEqualOperator() {
 	std::cout << "M*7 == M1? - " << std::boolalpha << (7.0 * M1 == M) << std::endl;
 }
 
+void test::testNonEqualOperator() {
+	linalg::Matrix M1 = { {1, 2, 3, 4}, {5, 6, 7, 8} };
+	linalg::Matrix M2 = { {0, 2, 5, 6}, {9, 1, 5, 8} };
+	std::cout << "Matrix M1:\n" << M1 << std::endl;
+	std::cout << "Matrix M2:\n" << M2 << std::endl;
+	std::cout << "M1 == M2 ? - " << std::boolalpha << (M1 == M2) << std::endl;
+}
 
+void test::testPowerWithInvert() {
+	linalg::Matrix A = { {11, 12, 13}, {17, 18, 15}, {19, 21, 88} };
+	linalg::Matrix B = { {1, 2, 4}, {5, 9, 8}, {11, 17, 9} };
+
+	std::cout << "Matrix A:\n" << A << std::endl;
+	std::cout << "Matrix B:\n" << B << std::endl;
+
+	std::cout << "\nA^0 = \n" << power(A, 0) << std::endl;
+	std::cout << "(A^T)^(-1) = \n" << power(transpose(A), -1) << std::endl;
+	std::cout << "(A^(-1))^T? = \n" << transpose(power(A, -1)) << std::endl;
+	std::cout << "(A^T)^(-1) == (A^(-1))^T? -" << std::boolalpha << (power(transpose(A), -1) == transpose(power(A, -1))) << std::endl;
+
+	std::cout << "\n(A*B)^(-1) = \n" << power(A * B, -1) << std::endl;
+	std::cout << "B^(-1) * A^(-1) = \n" << power(B, -1) * power(A, -1) << std::endl;
+	std::cout << "(A * B) ^ (-1) == B^(-1) * A^(-1)? - "<< std::boolalpha << (power(A * B, -1) == power(B, -1) * power(A, -1)) << std::endl;
+
+	std::cout << "\n(A^(-1))^6 = \n" << power(power(A, -1), 6) << std::endl;
+	std::cout << "(A^(-2))^3 = \n" << power(power(A, -2), 3) << std::endl;
+	std::cout << "(A^(-1))^6 == (A^(-2))^3? - " << std::boolalpha << (power(power(A, -1), 6) == power(power(A, -2), 3)) << std::endl;
+}
+
+void test::testMatrixPlusNumber() {
+	try {
+		linalg::Matrix A = { 1, 2, 3, 4, 5 };
+		std::cout << "Matrix A:\n" << A << std::endl;
+		std::cout << "A + 5 = \n" << A + 5 << std::endl;
+		std::cout << "A + 6 = \n" << A + 6 << std::endl;
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}
+
+void test::testReshape() {
+	try {
+		linalg::Matrix S = { {1, 2}, {3, 4}, {5, 6}, {7, 8} };
+		std::cout << "Matrix S:\n" << S << std::endl;
+		S.reshape(1, 8);
+		std::cout << "Reshaped matrix S (1*8):\n" << S << std::endl;
+		std::cout << "Let's try to specify the size 5*4\n";
+		S.reshape(5, 4);
+	}
+	catch (const std::exception& exc) {
+		std::cout << "Error: " << exc.what() << std::endl;
+	}
+}

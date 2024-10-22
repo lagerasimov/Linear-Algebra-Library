@@ -9,4 +9,8 @@ namespace test {
 	void testBadCopyConstructor();
 	void testMoveConstructor();
 	void testEqualOperator();
+	void testNonEqualOperator();
+	void testPowerWithInvert();
+	void testMatrixPlusNumber();
+	void testReshape();
 }

@@ -26,16 +26,10 @@ namespace linalg {
 		double& operator() (size_t row, size_t column);
 		const double& operator() (size_t row, size_t column) const;
 
-		Matrix operator+(const Matrix& obj) const;
 		Matrix& operator+=(const Matrix& obj);
-		Matrix operator-(const Matrix& obj) const;
 		Matrix& operator-=(const Matrix& obj);
-		Matrix operator*(const Matrix& obj) const;
-		Matrix operator*(double ch) const;
 		Matrix& operator*=(const Matrix& obj);
 		Matrix& operator*=(double ch);
-		bool operator==(const Matrix& obj) const noexcept;
-		bool operator!=(const Matrix& obj) const noexcept;
 			 		
 		size_t rows() const noexcept;
 		size_t columns() const noexcept;
@@ -57,6 +51,15 @@ namespace linalg {
 	Matrix invert(const Matrix& obj);
 	Matrix power(const Matrix& obj, int a);
 	Matrix Kramer(const Matrix& obj);
+
+	Matrix operator-(const Matrix& left, const Matrix& right);
+	Matrix operator+(const Matrix& left, const Matrix& right);
+	Matrix operator*(const Matrix& left, const Matrix& right);
+	Matrix operator*(const Matrix& obj, double ch);
+	Matrix operator*(double ch, const Matrix& obj);
+	bool operator==(const Matrix& left, const Matrix& right) noexcept;
+	bool operator!=(const Matrix& left, const Matrix& right) noexcept;
+
 	std::ostream& operator<<(std::ostream& potok, const Matrix& m);
 	Matrix operator*(double ch, const Matrix& obj);
 }
