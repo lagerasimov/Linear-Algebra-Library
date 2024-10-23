@@ -51,6 +51,12 @@ linalg::Matrix::~Matrix(){
 }
 
 linalg::Matrix::Matrix(const Matrix& m) {
+	if (this == &m) {
+		throw std::runtime_error("Self-assigment!");
+	}
+	if (m.empty()) {
+		throw std::runtime_error("The matrix can't be empty");
+	}
 	m_rows = m.m_rows;
 	m_columns = m.m_columns;
 	m_ptr = new double[m_rows * m_columns];

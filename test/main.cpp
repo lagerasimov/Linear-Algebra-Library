@@ -147,5 +147,5 @@ int main() {
             break;
         }
         std::cout << "\n";
-    }
+       }
 }
