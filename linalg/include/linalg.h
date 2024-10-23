@@ -37,6 +37,7 @@ namespace linalg {
 		size_t columns() const noexcept;
 		bool empty() const noexcept;
 		void reshape(size_t rows, size_t columns);
+		int rank() const;
 
 		//методы седьмого задания
 		double norm() const;
