@@ -51,6 +51,7 @@ linalg::Matrix::Matrix(size_t rows) {
 		m_rows = 0;
 		m_columns = 0;
 		m_ptr = nullptr;
+		return;
 	}
 	m_rows = rows;
 	m_columns = 1;
