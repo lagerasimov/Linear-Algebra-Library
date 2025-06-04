@@ -6,22 +6,22 @@
 namespace linalg {
 	class Matrix {
 	public:
-		Matrix() noexcept; //конструктор по умолчанию
+		Matrix() noexcept; //РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 
-		//конструкторы с параметрами
+		//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂС‹ СЃ РїР°СЂР°РјРµС‚СЂР°РјРё
 		Matrix(size_t rows, size_t columns);
 		Matrix(size_t rows);
 
-		Matrix(const Matrix& m);  //конструктор копирования lvalue-объекта		
-		Matrix(Matrix&& m) noexcept; //конструктор копирования rvalue-объекта
+		Matrix(const Matrix& m);  //РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ lvalue-РѕР±СЉРµРєС‚Р°		
+		Matrix(Matrix&& m) noexcept; //РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ rvalue-РѕР±СЉРµРєС‚Р°
 
-		//конструкторы с унифицированной инициализацией
+		//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂС‹ СЃ СѓРЅРёС„РёС†РёСЂРѕРІР°РЅРЅРѕР№ РёРЅРёС†РёР°Р»РёР·Р°С†РёРµР№
 		Matrix(std::initializer_list<double> a); 
 		Matrix(std::initializer_list<std::initializer_list<double>> a);
 
-		~Matrix(); //деструктор по умолчанию
+		~Matrix(); //РґРµСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 
-		//операторы
+		//РѕРїРµСЂР°С‚РѕСЂС‹
 		Matrix& operator=(const Matrix& obj); 
 		Matrix& operator=(Matrix&& obj) noexcept;
 		double& operator() (size_t row, size_t column);
@@ -32,35 +32,33 @@ namespace linalg {
 		Matrix& operator*=(const Matrix& obj);
 		Matrix& operator*=(double ch) noexcept;
 		
-		//методы первого задания
+		//РѕСЃРЅРѕРІРЅС‹Рµ РјРµС‚РѕРґС‹
 		size_t rows() const noexcept;
 		size_t columns() const noexcept;
 		bool empty() const noexcept;
 		void reshape(size_t rows, size_t columns);
 		int rank() const;
 
-		//методы седьмого задания
+		//РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹
 		double norm() const;
 		double trace() const;
 		double det() const;
-
-		//дополнительный метод
 		double minor(size_t row, size_t column) const;
 
 	private:
 		double* m_ptr = nullptr;
 		size_t m_rows = 0, m_columns = 0;
 	};
-	//функции из восьмого задания
+	//РѕСЃРЅРѕРІРЅС‹Рµ С„СѓРЅРєС†РёРё
 	Matrix concatenate(const Matrix& left, const Matrix& right);
 	Matrix transpose(const Matrix& obj);
 	Matrix invert(const Matrix& obj);
 	Matrix power(const Matrix& obj, int a);
 
-	//дополнительная функция
+	//РјРµС‚РѕРґ РљСЂР°РјРµСЂР°
 	Matrix Kramer(const Matrix& obj);
 
-	//операторы 
+	//РѕСЃРЅРѕРІРЅС‹Рµ РѕРїРµСЂР°С‚РѕСЂС‹
 	Matrix operator-(const Matrix& left, const Matrix& right);
 	Matrix operator+(const Matrix& left, const Matrix& right);
 	Matrix operator*(const Matrix& left, const Matrix& right);
@@ -69,6 +67,6 @@ namespace linalg {
 	bool operator==(const Matrix& left, const Matrix& right) noexcept;
 	bool operator!=(const Matrix& left, const Matrix& right) noexcept;
 
-	//оператор вывода
+	//РѕРїРµСЂР°С‚РѕСЂ РІС‹РІРѕРґР°
 	std::ostream& operator<<(std::ostream& potok, const Matrix& m) noexcept;
 }
